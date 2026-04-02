@@ -1,0 +1,43 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20 
+    commands:
+      - echo "Installing dependencies..."
+      
+  pre_build:
+    commands:
+      - echo "Starting clean install in Frontend directory..."
+      - cd Frontend
+      
+      - rm -rf node_modules
+      - npm cache clean --force
+      - npm install
+      
+      - cd ..
+
+  build:
+    commands:
+      - echo "Starting React build..."
+      - cd Frontend
+      - CI=false npm run build 
+      - echo "Build finished."
+      - cd ..
+
+  # FASE MODIFICATA: Sposta il contenuto compilato nella radice del contesto di CodeBuild
+  post_build:
+    commands:
+      - echo "Staging final build files to artifact root..."
+      
+      # Utilizza il percorso standard di output di React
+      - cp -R Frontend/build/. .
+      
+      - rm -rf Frontend
+
+# FASE FINALE: Definisce l'artefatto per il deployment
+artifacts:
+  files:
+    # Include TUTTO ciò che si trova nella radice del contesto di build
+    - '**/*'

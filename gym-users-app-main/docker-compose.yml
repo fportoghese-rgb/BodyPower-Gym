@@ -1,0 +1,13 @@
+services:
+  frontend:
+    build:
+      context: ./docker/NodeApp/Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" 
+    volumes:
+      - ./docker/NodeApp/Frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost:3001

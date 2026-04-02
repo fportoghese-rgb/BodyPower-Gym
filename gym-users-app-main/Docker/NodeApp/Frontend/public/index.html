@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="description" content="GYMCloud - Sistema di gestione per palestre moderno e intuitivo" />
+    <meta name="keywords" content="palestra, fitness, gestione, membri, allenamenti, abbonamenti" />
+    <meta name="author" content="GYMCloud Team" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gymcloud.app/" />
+    <meta property="og:title" content="GYMCloud - Sistema di gestione per palestre" />
+    <meta property="og:description" content="Gestisci la tua palestra con facilità: membri, allenamenti, abbonamenti e molto altro." />
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <title>GYMCloud - Gestione Palestre</title>
+    
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      
+      .logo {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #2563eb;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+      
+      .logo::before {
+        content: "💪";
+        font-size: 3rem;
+        animation: bounce 2s infinite;
+      }
+      
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+      }
+      
+      .subtitle {
+        font-size: 1.25rem;
+        color: #64748b;
+        margin-bottom: 2rem;
+      }
+      
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+      
+      .dashboard-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .member-form {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .form-label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+      }
+      
+      .form-input {
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+      
+      .form-input:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+      
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+      
+      .btn-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+      }
+      
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
+      }
+      
+      .btn-secondary {
+        background: #f8fafc;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+      }
+      
+      .btn-secondary:hover {
+        background: #e2e8f0;
+      }
+      
+      .members-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      
+      .member-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        background: #f9fafb;
+        transition: background-color 0.3s ease;
+      }
+      
+      .member-item:hover {
+        background: #f3f4f6;
+      }
+      
+      .member-info {
+        flex: 1;
+      }
+      
+      .member-name {
+        font-weight: 600;
+        color: #1f2937;
+      }
+      
+      .member-email {
+        color: #6b7280;
+        font-size: 0.9rem;
+      }
+      
+      .member-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+      
+      .btn-small {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+      }
+      
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      
+      .error-message {
+        background: #fef2f2;
+        color: #dc2626;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #fecaca;
+        margin-bottom: 1rem;
+      }
+      
+      .success-message {
+        background: #f0fdf4;
+        color: #16a34a;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #bbf7d0;
+        margin-bottom: 1rem;
+      }
+      
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .stat-box {
+        background: #f8fafc;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+      }
+      
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2563eb;
+      }
+      
+      .stat-label {
+        color: #64748b;
+        font-size: 0.875rem;
+      }
+      
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+        
+        .logo {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">BODY POWER GYM</div>
+        <div class="subtitle">Sistema di gestione per palestre moderno e intuitivo</div>
+        
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-box">
+            <div class="stat-number" id="totalMembers">-</div>
+            <div class="stat-label">Membri Attivi</div> 
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="newMembersToday">-</div>
+            <div class="stat-label">Nuovi Oggi</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="activeSubscriptions">-</div>
+            <div class="stat-label">Abbonamenti</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <!-- Sezione Aggiungi Membro -->
+        <div class="dashboard-card">
+          <h2 class="card-title">
+            👤 Aggiungi Nuovo Atleta
+          </h2>
+          
+          <div id="addMemberMessages"></div>
+          
+          <form id="addMemberForm" class="member-form">
+            <div class="form-group">
+              <label class="form-label" for="memberName">Nome Completo</label>
+              <input type="text" id="memberName" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="memberEmail">Email</label>
+              <input type="email" id="memberEmail" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="memberPhone">Telefono</label>
+              <input type="tel" id="memberPhone" class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="subscriptionType">Tipo Abbonamento</label>
+              <select id="subscriptionType" class="form-input" required>
+                <option value="">Seleziona abbonamento</option>
+                <option value="monthly">Mensile - €50</option>
+                <option value="quarterly">Trimestrale - €135</option>
+                <option value="yearly">Annuale - €480</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="memberGoal">Obiettivo (opzionale)</label>
+              <select id="memberGoal" class="form-input">
+                <option value="">Seleziona obiettivo</option>
+                <option value="Perdere peso">Perdere peso</option>
+                <option value="Aumentare massa">Aumentare massa</option>
+                <option value="Tonificare">Tonificare</option>
+                <option value="Mantenersi in forma">Mantenersi in forma</option>
+                <option value="Riabilitazione">Riabilitazione</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+              Aggiungi il Nuovo Atleti
+            </button>
+          </form>
+        </div>
+        
+        <!-- Sezione Lista Membri -->
+        <div class="dashboard-card">
+          <h2 class="card-title">
+            📋 Membri Registrati
+            <button class="btn btn-secondary btn-small" onclick="loadMembers()">
+              🔄 Ricarica
+            </button>
+          </h2>
+          
+          <div id="membersMessages"></div>
+          
+          <div class="members-list" id="membersList">
+            <div style="text-align: center; color: #6b7280; padding: 2rem;">
+              Caricamento membri...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      // ========================================
+      // CONFIGURAZIONE API - AGGIORNATA ✅
+      // ========================================
+      
+      const API_CONFIG = {
+        BASE_URL: 'https://kttidoigp2.execute-api.eu-west-1.amazonaws.com/nuovafase',
+        ENDPOINTS: {
+          MEMBERS: '/users',
+          STATS: '/stats'
+        }
+      };
+      
+      const API_HEADERS = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
+      
+      // ========================================
+      // UTILITY FUNCTIONS
+      // ========================================
+      
+      function showMessage(containerId, message, type = 'success') {
+        const container = document.getElementById(containerId);
+        const messageClass = type === 'success' ? 'success-message' : 'error-message';
+        container.innerHTML = `<div class="${messageClass}">${message}</div>`;
+        
+        setTimeout(() => {
+          container.innerHTML = '';
+        }, 5000);
+      }
+      
+      function setLoading(elementId, isLoading) {
+        const element = document.getElementById(elementId);
+        if (isLoading) {
+          element.classList.add('loading');
+        } else {
+          element.classList.remove('loading');
+        }
+      }
+      
+      // ========================================
+      // API CALLS - VERSIONE MIGLIORATA
+      // ========================================
+      
+      async function apiCall(endpoint, method = 'GET', body = null) {
+        const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+        
+        console.log('🔄 Invio richiesta a:', url);
+        console.log('📋 Metodo:', method);
+        if (body) console.log('📦 Body:', body);
+        
+        const options = {
+          method,
+          headers: API_HEADERS,
+          mode: 'cors',
+        };
+        
+        if (body && method !== 'GET') {
+          options.body = JSON.stringify(body);
+        }
+        
+        try {
+          const response = await fetch(url, options);
+          
+          console.log('📥 Status risposta:', response.status, response.statusText);
+          
+          if (!response.ok) {
+            let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+            try {
+              const errorBody = await response.text();
+              if (errorBody) {
+                console.log('❌ Errore body:', errorBody);
+                errorMessage += ` - ${errorBody}`;
+              }
+            } catch (e) {
+              // Ignora errori nel parsing dell'errore
+            }
+            throw new Error(errorMessage);
+          }
+          
+          // Leggi come testo prima per debugging
+          const responseText = await response.text();
+          console.log('📄 Risposta testo:', responseText);
+          
+          // Se la risposta è vuota, ritorna oggetto vuoto
+          if (!responseText.trim()) {
+            console.log('⚠️ Risposta API vuota');
+            return {};
+          }
+          
+          // Prova a parsare come JSON
+          const data = JSON.parse(responseText);
+          console.log('📊 Dati parsati:', data);
+          
+          return data;
+          
+        } catch (error) {
+          console.error('❌ Errore API:', error);
+          throw error;
+        }
+      }
+      
+      // ========================================
+      // GESTIONE MEMBRI - VERSIONE CORRETTA
+      // ========================================
+      
+      async function loadMembers() {
+        setLoading('membersList', true);
+        
+        try {
+          console.log('🎯 Caricamento membri...');
+          const response = await apiCall(API_CONFIG.ENDPOINTS.MEMBERS);
+          
+          console.log('🎯 Risposta API completa:', response);
+          console.log('🎯 Tipo risposta:', typeof response);
+          
+          // GESTIONE MULTIPLI FORMATI DI RISPOSTA
+          let members = [];
+          
+          if (Array.isArray(response)) {
+            // Caso 1: La risposta è direttamente un array
+            members = response;
+            console.log('✅ Formato: Array diretto');
+          } 
+          else if (response && typeof response === 'object') {
+            // Caso 2: La risposta è un oggetto con varie proprietà
+            if (response.members && Array.isArray(response.members)) {
+              members = response.members;
+              console.log('✅ Formato: response.members');
+            } 
+            else if (response.data && Array.isArray(response.data)) {
+              members = response.data;
+              console.log('✅ Formato: response.data');
+            }
+            else if (response.users && Array.isArray(response.users)) {
+              members = response.users;
+              console.log('✅ Formato: response.users');
+            }
+            else if (response.body) {
+              // Caso 3: Risposta Lambda con body (potrebbe essere stringa)
+              try {
+                const body = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
+                if (body.members && Array.isArray(body.members)) {
+                  members = body.members;
+                  console.log('✅ Formato: response.body.members');
+                } else if (body.users && Array.isArray(body.users)) {
+                  members = body.users;
+                  console.log('✅ Formato: response.body.users');
+                } else if (Array.isArray(body)) {
+                  members = body;
+                  console.log('✅ Formato: response.body (array)');
+                } else {
+                  // Prova a cercare qualsiasi array nell'oggetto
+                  const arrays = Object.values(body).filter(item => Array.isArray(item));
+                  if (arrays.length > 0) {
+                    members = arrays[0];
+                    console.log('✅ Formato: array trovato in response.body');
+                  }
+                }
+              } catch (e) {
+                console.error('Errore parsing body:', e);
+              }
+            }
+            else {
+              // Caso 4: Cerca qualsiasi proprietà che sia un array
+              const arrays = Object.values(response).filter(item => Array.isArray(item));
+              if (arrays.length > 0) {
+                members = arrays[0];
+                console.log('✅ Formato: array trovato in risposta');
+              } else {
+                // Caso 5: Se è un oggetto ma non ha array, potrebbe essere un singolo utente
+                if (response.name || response.email || response.id) {
+                  members = [response];
+                  console.log('✅ Formato: singolo oggetto utente');
+                } else {
+                  console.log('⚠️ Formato: non riconosciuto, usando array vuoto');
+                }
+              }
+            }
+          }
+          
+          console.log('👥 Membri estratti:', members);
+          displayMembers(members);
+          
+        } catch (error) {
+          console.error('❌ Errore nel caricamento membri:', error);
+          document.getElementById('membersList').innerHTML = `
+            <div style="text-align: center; color: #dc2626; padding: 2rem;">
+              ❌ Errore nel caricamento dei membri<br>
+              <small>${error.message}</small>
+              <br><br>
+              <button class="btn btn-secondary" onclick="loadMembers()">Riprova</button>
+              <br><br>
+              <details style="text-align: left;">
+                <summary>Dettagli errore</summary>
+                <small style="font-family: monospace; white-space: pre-wrap;">${error.stack || error.toString()}</small>
+              </details>
+            </div>
+          `;
+        } finally {
+          setLoading('membersList', false);
+        }
+      }
+      
+      function displayMembers(members) {
+        const container = document.getElementById('membersList');
+        
+        console.log('🎨 Display membri ricevuti:', members);
+        
+        // Se members non è un array, prova a convertirlo
+        if (!Array.isArray(members)) {
+          console.warn('⚠️ Members non è un array, tentativo conversione:', members);
+          
+          if (members && typeof members === 'object') {
+            members = Object.values(members);
+          } else {
+            members = [];
+          }
+        }
+        
+        if (!members || members.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; color: #6b7280; padding: 2rem;">
+              👤 Nessun membro registrato<br>
+              <small>Il database è vuoto o la risposta non contiene membri</small>
+              <br><br>
+              <div style="background: #f3f4f6; padding: 1rem; border-radius: 8px; font-size: 0.8rem; text-align: left;">
+                <strong>Debug Info:</strong><br>
+                Tipo: ${typeof members}<br>
+                Lunghezza: ${members.length}<br>
+                Valore: ${JSON.stringify(members).substring(0, 300)}...
+              </div>
+            </div>
+          `;
+          return;
+        }
+        
+        const membersHtml = members.map((member, index) => {
+          // Gestione campi multipli per compatibilità
+          const memberName = member.fullName || member.name || member.nome || `${member.firstName || ''} ${member.lastName || ''}`.trim() || `Membro ${index + 1}`;
+          const memberEmail = member.email || member.mail || 'Nessuna email';
+          const memberPhone = member.phone || member.telefono || member.telephone;
+          const memberId = member.userId || member.id || member.memberId || index;
+          const membershipType = member.membershipType || member.subscriptionType || member.abbonamento;
+          const memberGoal = member.goal || member.obiettivo;
+          const createdAt = member.createdAt || member.joinDate || member.dataIscrizione;
+          
+          return `
+            <div class="member-item">
+              <div class="member-info">
+                <div class="member-name">${escapeHtml(memberName)}</div>
+                <div class="member-email">📧 ${escapeHtml(memberEmail)}</div>
+                ${memberPhone ? `<div class="member-email">📱 ${escapeHtml(memberPhone)}</div>` : ''}
+                ${membershipType ? `<div class="member-email">🎫 ${getMembershipDisplayName(membershipType)}</div>` : ''}
+                ${memberGoal ? `<div class="member-email">🎯 ${escapeHtml(memberGoal)}</div>` : ''}
+                ${createdAt ? `<div class="member-email">📅 ${formatDate(createdAt)}</div>` : ''}
+              </div>
+              <div class="member-actions">
+                <button class="btn btn-secondary btn-small" onclick="editMember('${memberId}')">
+                  ✏️ Modifica
+                </button>
+                <button class="btn btn-secondary btn-small" onclick="deleteMember('${memberId}', '${escapeHtml(memberName)}')">
+                  🗑️ Elimina
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        container.innerHTML = membersHtml;
+      }
+      
+      async function addMember(memberData) {
+        try {
+          // Prepara i dati nel formato che hai specificato
+          const apiData = {
+            name: memberData.name,
+            email: memberData.email,
+            phone: memberData.phone || '',
+            subscriptionType: memberData.subscriptionType,
+            goal: memberData.goal || ''
+          };
+          
+          console.log('📤 Invio dati membro:', apiData);
+          
+          const response = await apiCall(API_CONFIG.ENDPOINTS.MEMBERS, 'POST', apiData);
+          
+          showMessage('addMemberMessages', `✅ Membro "${memberData.name}" aggiunto con successo!`);
+          document.getElementById('addMemberForm').reset();
+          
+          loadMembers();
+          loadStats();
+          
+          return response;
+          
+        } catch (error) {
+          console.error('Errore nell\'aggiunta del membro:', error);
+          showMessage('addMemberMessages', `❌ Errore nell'aggiunta del membro: ${error.message}`, 'error');
+          throw error;
+        }
+      }
+      
+      async function deleteMember(memberId, memberName) {
+        if (!confirm(`Sei sicuro di voler eliminare il membro "${memberName}"?`)) {
+          return;
+        }
+        
+        try {
+          await apiCall(`${API_CONFIG.ENDPOINTS.MEMBERS}/${memberId}`, 'DELETE');
+          
+          showMessage('membersMessages', `✅ Membro "${memberName}" eliminato con successo!`);
+          loadMembers();
+          loadStats();
+          
+        } catch (error) {
+          console.error('Errore nell\'eliminazione del membro:', error);
+          showMessage('membersMessages', `❌ Errore nell'eliminazione: ${error.message}`, 'error');
+        }
+      }
+      
+      function editMember(memberId) {
+        alert(`Funzione di modifica per il membro ID: ${memberId}\nIn sviluppo...`);
+      }
+      
+      // ========================================
+      // STATISTICHE
+      // ========================================
+      
+      async function loadStats() {
+        try {
+          // Prima prova a usare l'endpoint dedicato per le stats
+          let stats;
+          try {
+            stats = await apiCall(API_CONFIG.ENDPOINTS.STATS);
+            console.log('📊 Stats da endpoint dedicato:', stats);
+            displayStats(stats);
+            return;
+          } catch (statsError) {
+            console.log('⚠️ Endpoint stats non disponibile, calcolando dai membri...');
+          }
+          
+          // Se l'endpoint stats non funziona, calcola dai membri
+          const membersResponse = await apiCall(API_CONFIG.ENDPOINTS.MEMBERS);
+          
+          let members = [];
+          if (Array.isArray(membersResponse)) {
+            members = membersResponse;
+          } else if (membersResponse.members) {
+            members = membersResponse.members;
+          } else if (membersResponse.users) {
+            members = membersResponse.users;
+          } else if (membersResponse.data) {
+            members = membersResponse.data;
+          } else {
+            members = Object.values(membersResponse);
+          }
+          
+          const calculatedStats = calculateStatsFromMembers(members);
+          displayStats(calculatedStats);
+          
+        } catch (error) {
+          console.error('Errore nel caricamento statistiche:', error);
+          displayStats({
+            totalMembers: '?',
+            newMembersToday: '?',
+            activeSubscriptions: '?'
+          });
+        }
+      }
+      
+      function calculateStatsFromMembers(members) {
+        if (!members || !Array.isArray(members)) {
+          return { totalMembers: 0, newMembersToday: 0, activeSubscriptions: 0 };
+        }
+        
+        const today = new Date().toDateString();
+        const newToday = members.filter(member => {
+          const memberDate = new Date(member.createdAt || member.joinDate || new Date());
+          return memberDate.toDateString() === today;
+        }).length;
+        
+        const withSubscription = members.filter(m => 
+          m.subscriptionType || m.membershipType
+        ).length;
+        
+        return {
+          totalMembers: members.length,
+          newMembersToday: newToday,
+          activeSubscriptions: withSubscription
+        };
+      }
+      
+      function displayStats(stats) {
+        document.getElementById('totalMembers').textContent = stats.totalMembers || 0;
+        document.getElementById('newMembersToday').textContent = stats.newMembersToday || 0;
+        document.getElementById('activeSubscriptions').textContent = stats.activeSubscriptions || 0;
+      }
+      
+      // ========================================
+      // HELPER FUNCTIONS
+      // ========================================
+      
+      function getMembershipDisplayName(type) {
+        const types = {
+          'monthly': 'Mensile',
+          'quarterly': 'Trimestrale', 
+          'yearly': 'Annuale',
+          'basic': 'Base',
+          'premium': 'Premium',
+          'student': 'Studente'
+        };
+        return types[type] || type;
+      }
+      
+      function formatDate(dateString) {
+        if (!dateString) return '';
+        try {
+          const date = new Date(dateString);
+          return date.toLocaleDateString('it-IT');
+        } catch (e) {
+          return dateString;
+        }
+      }
+      
+      function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      // ========================================
+      // EVENT HANDLERS
+      // ========================================
+      
+      document.getElementById('addMemberForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const memberData = {
+          name: document.getElementById('memberName').value.trim(),
+          email: document.getElementById('memberEmail').value.trim(),
+          phone: document.getElementById('memberPhone').value.trim(),
+          subscriptionType: document.getElementById('subscriptionType').value,
+          goal: document.getElementById('memberGoal').value
+        };
+        
+        if (!memberData.name || !memberData.email) {
+          showMessage('addMemberMessages', '❌ Nome e email sono obbligatori', 'error');
+          return;
+        }
+        
+        setLoading('addMemberForm', true);
+        
+        try {
+          await addMember(memberData);
+        } finally {
+          setLoading('addMemberForm', false);
+        }
+      });
+      
+      // ========================================
+      // INIZIALIZZAZIONE
+      // ========================================
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 GYMCloud caricato!');
+        console.log('🔗 URL API configurato:', API_CONFIG.BASE_URL);
+        
+        loadMembers();
+        loadStats();
+        
+        // Ricarica le statistiche ogni 30 secondi
+        setInterval(loadStats, 30000);
+      });
+      
+      // Debug helpers per test
+      window.gymcloudDebug = {
+        testAPI: () => apiCall('/users'),
+        testStats: () => apiCall('/stats'),
+        loadMembers,
+        loadStats,
+        apiConfig: API_CONFIG,
+        testConnection: async () => {
+          try {
+            console.log('🧪 Test connessione API...');
+            const result = await fetch(API_CONFIG.BASE_URL + '/users');
+            console.log('✅ Status:', result.status);
+            console.log('✅ Headers:', [...result.headers.entries()]);
+            return result;
+          } catch (e) {
+            console.error('❌ Test fallito:', e);
+            return e;
+          }
+        }
+      };
+      
+      console.log('🔧 Debug tools disponibili in window.gymcloudDebug');
+    </script>
+  </body>
+</html>
